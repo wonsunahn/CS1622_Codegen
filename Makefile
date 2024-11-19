@@ -24,9 +24,10 @@ LLVMFLAGS = `llvm-config-10 --cxxflags --ldflags --system-libs --libs all`
 FLEX = flex
 YACC = yacc
 
-all: build test
+all: build examples test
 build: codegen
-test: $(EXAMPLE_OUTPUTS) $(OUTPUTS) $(DIFFS)
+examples: $(EXAMPLE_OUTPUTS)
+test: $(OUTPUTS) $(DIFFS)
 
 codegen: ${OBJ}
 	${CXX} ${CFLAGS} ${LLVMFLAGS} -o codegen ${OBJ} -lfl
