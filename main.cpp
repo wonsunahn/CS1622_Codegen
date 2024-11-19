@@ -31,7 +31,7 @@ extern tree SyntaxTree;
 /* Make symbol table function */
 void MkST(tree);
 /* Code generation function */
-void codegen(tree root);
+void codegen();
 
 void printUsage()
 {
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 
   /* Generate the code */
   TheModule = std::make_unique<llvm::Module>(outputFileName, TheContext);
-  codegen(SyntaxTree);
+  codegen();
   int fd = open(outputFileName.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
   if (fd == -1)
   {

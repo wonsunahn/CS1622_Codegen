@@ -25,7 +25,7 @@ static void emitSymbol(int idx)
   // TODO: Emit symbol in index idx in symbol table.
 }
 
-void codegen(tree root)
+void codegen()
 {
   for (int i = 1; i < GetSymbolTableSize(); i++)
   {
