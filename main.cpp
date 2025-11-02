@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   bool verbose = false;
   bool printLineNo = false;
   int optionIndex = 0;
-  char c;
+  int c;
 
   while ((c = getopt(argc, argv, "hvlo:0")) != -1) {
     switch (c) {
