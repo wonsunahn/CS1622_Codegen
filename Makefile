@@ -14,12 +14,12 @@ DIFFS := $(foreach test,$(TESTS),diffs/$(test:tests/%.mjava=%).diff)
 EXAMPLES = $(wildcard examples/*.cpp)
 EXAMPLE_OUTPUTS = $(foreach example,$(EXAMPLES),examples_outputs/$(example:examples/%.cpp=%).codegen.out)
 
-CXX = clang++-10 -stdlib=libc++
-CC = clang-10
+CXX = clang++-12 -stdlib=libc++
+CC = clang-12
 CFLAGS = -g -I .
-LLVMCXXFLAGS = `llvm-config-10 --cxxflags`
-LLVMCFLAGS = `llvm-config-10 --cflags`
-LLVMFLAGS = `llvm-config-10 --cxxflags --ldflags --system-libs --libs all`
+LLVMCXXFLAGS = `llvm-config-12 --cxxflags`
+LLVMCFLAGS = `llvm-config-12 --cflags`
+LLVMFLAGS = `llvm-config-12 --cxxflags --ldflags --system-libs --libs all`
 
 FLEX = flex
 YACC = yacc
