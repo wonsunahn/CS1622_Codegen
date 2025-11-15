@@ -118,4 +118,7 @@ endef
 $(foreach test,$(TESTS),$(eval $(call ast_diff_rules,$(test))))
 
 clean:
-	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* examples_outputs/* diffs/* asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv
+	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* diffs/*
+
+distclean: clean
+	rm -f examples_outputs/* asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv
