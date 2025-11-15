@@ -1,6 +1,8 @@
 diffs/
 outputs/
 examples_outputs/
+asts/
+ast_diffs/
 *.o
 lex.yy.c
 y.tab.*
