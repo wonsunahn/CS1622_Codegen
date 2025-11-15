@@ -10,6 +10,8 @@ OBJ += $(CSOURCES:%.c=%.o)
 TESTS = $(wildcard tests/*.mjava)
 OUTPUTS := $(foreach test,$(TESTS),outputs/$(test:tests/%.mjava=%).out)
 DIFFS := $(foreach test,$(TESTS),diffs/$(test:tests/%.mjava=%).diff)
+ASTS := $(foreach test,$(TESTS),asts/$(test:tests/%.mjava=%).png)
+AST_DIFFS := $(foreach test,$(TESTS),ast_diffs/$(test:tests/%.mjava=%).png)
 
 EXAMPLES = $(wildcard examples/*.cpp)
 EXAMPLE_OUTPUTS = $(foreach example,$(EXAMPLES),examples_outputs/$(example:examples/%.cpp=%).codegen.out)
@@ -24,10 +26,10 @@ LLVMFLAGS = `llvm-config-12 --cxxflags --ldflags --system-libs --libs all`
 FLEX = flex
 YACC = yacc
 
-all: build examples test
+all: build test asts
 build: codegen
-examples: $(EXAMPLE_OUTPUTS)
-test: $(OUTPUTS) $(DIFFS)
+test: $(EXAMPLE_OUTPUTS) $(OUTPUTS) $(DIFFS)
+asts: $(ASTS) $(AST_DIFFS)
 
 codegen: ${OBJ}
 	${CXX} ${CFLAGS} ${LLVMFLAGS} -o codegen ${OBJ} -lfl
@@ -97,5 +99,23 @@ diffs/$(1:tests/%.mjava=%).diff: outputs/$(1:tests/%.mjava=%).out
 endef
 $(foreach test,$(TESTS),$(eval $(call diff_rules,$(test))))
 
+define ast_rules
+asts/$(1:tests/%.mjava=%).png: codegen $(1)
+	@echo "./codegen -v -p asts/$(1:tests/%.mjava=%).gv $(1) > /dev/null"
+	-@./codegen -v -p asts/$(1:tests/%.mjava=%).gv $(1) > /dev/null
+	@echo "gv -Tpng asts/$(1:tests/%.mjava=%).gv > asts/$(1:tests/%.mjava=%).png"
+	-@dot -Tpng asts/$(1:tests/%.mjava=%).gv > asts/$(1:tests/%.mjava=%).png
+endef
+$(foreach test,$(TESTS),$(eval $(call ast_rules,$(test))))
+
+define ast_diff_rules
+ast_diffs/$(1:tests/%.mjava=%).png: asts/$(1:tests/%.mjava=%).gv
+	@echo "awk -f dotdiff.awk $$< asts_solution/$(1:tests/%.mjava=%).gv > ast_diffs/$(1:tests/%.mjava=%).gv"
+	-@awk -f dotdiff.awk $$< asts_solution/$(1:tests/%.mjava=%).gv > ast_diffs/$(1:tests/%.mjava=%).gv
+	@echo "dot -Tpng ast_diffs/$(1:tests/%.mjava=%).gv > $$@"
+	-@dot -Tpng ast_diffs/$(1:tests/%.mjava=%).gv > $$@
+endef
+$(foreach test,$(TESTS),$(eval $(call ast_diff_rules,$(test))))
+
 clean:
-	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* examples_outputs/*
+	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* examples_outputs/* diffs/* asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv
