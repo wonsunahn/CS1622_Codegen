@@ -1,4 +1,4 @@
-CXXSOURCES = $(shell find . -not -path './examples/*' -name '*.cpp')
+CXXSOURCES = $(shell find . -not -path './examples/*' -and -not -path './project_3_solution/*' -name '*.cpp')
 CSOURCES = $(shell find . -not -path './y.tab.c' -and -not -path './lex.yy.c' -name '*.c')
 CSOURCES += y.tab.c
 HEADERS = $(shell find . -not -path './y.tab.h' -name '*.h')
