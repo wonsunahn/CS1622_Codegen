@@ -26,10 +26,11 @@ LLVMFLAGS = `llvm-config-12 --cxxflags --ldflags --system-libs --libs all`
 FLEX = flex
 YACC = yacc
 
-all: build test asts
+all: build test asts examples
 build: codegen
-test: $(EXAMPLE_OUTPUTS) $(OUTPUTS) $(OUTPUT_DIFFS)
+test: $(OUTPUTS) $(OUTPUT_DIFFS)
 asts: $(ASTS) $(AST_DIFFS)
+examples: $(EXAMPLE_OUTPUTS)
 
 codegen: ${OBJ}
 	${CXX} ${CFLAGS} ${LLVMFLAGS} -o codegen ${OBJ} -lfl
@@ -118,7 +119,7 @@ endef
 $(foreach test,$(TESTS),$(eval $(call ast_diff_rules,$(test))))
 
 clean:
-	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* output_diffs/* examples_outputs/* 
+	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* output_diffs/*
 
 distclean: clean
-	rm -f asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv
+	rm -f asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv examples_outputs/*
