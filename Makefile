@@ -9,7 +9,7 @@ OBJ += $(CSOURCES:%.c=%.o)
 
 TESTS = $(wildcard tests/*.mjava)
 OUTPUTS := $(foreach test,$(TESTS),outputs/$(test:tests/%.mjava=%).out)
-DIFFS := $(foreach test,$(TESTS),diffs/$(test:tests/%.mjava=%).diff)
+OUTPUT_DIFFS := $(foreach test,$(TESTS),output_diffs/$(test:tests/%.mjava=%).diff)
 ASTS := $(foreach test,$(TESTS),asts/$(test:tests/%.mjava=%).png)
 AST_DIFFS := $(foreach test,$(TESTS),ast_diffs/$(test:tests/%.mjava=%).png)
 
@@ -28,7 +28,7 @@ YACC = yacc
 
 all: build test asts
 build: codegen
-test: $(EXAMPLE_OUTPUTS) $(OUTPUTS) $(DIFFS)
+test: $(EXAMPLE_OUTPUTS) $(OUTPUTS) $(OUTPUT_DIFFS)
 asts: $(ASTS) $(AST_DIFFS)
 
 codegen: ${OBJ}
@@ -93,7 +93,7 @@ endef
 $(foreach test,$(TESTS),$(eval $(call test_rules,$(test))))
 
 define diff_rules
-diffs/$(1:tests/%.mjava=%).diff: outputs/$(1:tests/%.mjava=%).out
+output_diffs/$(1:tests/%.mjava=%).diff: outputs/$(1:tests/%.mjava=%).out
 	@echo "diff -dy -W 170 $$< outputs_solution/$(1:tests/%.mjava=%).out > $$@"
 	-@diff -d $$< outputs_solution/$(1:tests/%.mjava=%).out > $$@
 endef
@@ -118,7 +118,7 @@ endef
 $(foreach test,$(TESTS),$(eval $(call ast_diff_rules,$(test))))
 
 clean:
-	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* diffs/* examples_outputs/* 
+	rm -f codegen y.tab.* lex.yy.c ${OBJ} outputs/* output_diffs/* examples_outputs/* 
 
 distclean: clean
 	rm -f asts/*.png ast_diffs/*.png asts/*.gv ast_diffs/*.gv
