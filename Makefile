@@ -57,11 +57,11 @@ examples_outputs/$(1:examples/%.cpp=%).codegen.ll: examples_outputs/$(1:examples
 	@echo "$$< > $$@"
 	-@$$< > $$@
 examples_outputs/$(1:examples/%.cpp=%).codegen.s: examples_outputs/$(1:examples/%.cpp=%).codegen.ll
-	@echo "clang -Wno-override-module -S -c $$< -o $$@"
-	-@clang -Wno-override-module -S -c $$< -o $$@
+	@echo "$(CC) -Wno-override-module -S -c $$< -o $$@"
+	-@$(CC) -Wno-override-module -S -c $$< -o $$@
 examples_outputs/$(1:examples/%.cpp=%).codegen.exe: examples_outputs/$(1:examples/%.cpp=%).codegen.s
-	@echo "clang $$< -o $$@"
-	-@clang $$< -o $$@
+	@echo "$(CC) $$< -o $$@"
+	-@$(CC) $$< -o $$@
 examples_outputs/$(1:examples/%.cpp=%).codegen.out: examples_outputs/$(1:examples/%.cpp=%).codegen.exe
 	@echo "$$< > $$@"
 	-@$$< > $$@
@@ -73,14 +73,14 @@ outputs/$(1:tests/%.mjava=%).ll: $(1) codegen
 	@echo "./codegen -v -o $$@ $(1) > outputs/$(1:tests/%.mjava=%).log"
 	-@./codegen -v -o $$@ $(1) > outputs/$(1:tests/%.mjava=%).log
 outputs/$(1:tests/%.mjava=%).s: outputs/$(1:tests/%.mjava=%).ll
-	@echo "clang -S -c $$< -o $$@"
-	-@clang -Wno-override-module -S -c $$< -o $$@
+	@echo "$(CC) -S -c $$< -o $$@"
+	-@$(CC) -Wno-override-module -S -c $$< -o $$@
 outputs/$(1:tests/%.mjava=%).o: outputs/$(1:tests/%.mjava=%).s
-	@echo "clang -c $$< -o $$@"
-	-@clang -c $$< -o $$@
+	@echo "$(CC) -c $$< -o $$@"
+	-@$(CC) -c $$< -o $$@
 outputs/$(1:tests/%.mjava=%).exe: outputs/$(1:tests/%.mjava=%).o
-	@echo "clang $$^ -o $$@"
-	-@clang $$^ -o $$@
+	@echo "$(CC) $$^ -o $$@"
+	-@$(CC) $$^ -o $$@
 ifneq ("$(wildcard tests/$(1:tests/%.mjava=%).in)","")
 outputs/$(1:tests/%.mjava=%).out: outputs/$(1:tests/%.mjava=%).exe
 	@echo "$$< < tests/$(1:tests/%.mjava=%).in > $$@"
