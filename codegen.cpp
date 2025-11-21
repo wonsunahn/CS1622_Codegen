@@ -58,7 +58,7 @@ static llvm::Type *getLLVMType(tree typenode, tree initnode)
   return type;
 }
 
-static llvm::Value *emitFunctionCall(tree t, llvm::Function *func)
+static llvm::Value *emitFunctionCall(tree t)
 {
   // TODO: Modify to handle function calls in a generic way
 
@@ -97,9 +97,9 @@ static llvm::Value *emitFunctionCall(tree t, llvm::Function *func)
   return nullptr;
 }
 
-static void emitCode(tree t, llvm::Function *func)
+static void emitCode(tree t)
 {
-  // TODO: Emit code for the tree node t into the function func, for all statements and expressions
+  // TODO: Emit code for the tree node t
 
   assert(t != nullptr);
 
@@ -109,7 +109,7 @@ static void emitCode(tree t, llvm::Function *func)
     switch (t->NodeOpType)
     {
     case RoutineCallOp:
-      emitFunctionCall(t, func);
+      emitFunctionCall(t);
       break;
     case ReturnOp:
       if (!IsNull(LeftChild(t)))
@@ -119,8 +119,8 @@ static void emitCode(tree t, llvm::Function *func)
       break;
     default:
       // Recursively emit code for children
-      emitCode(t->LeftC, func);
-      emitCode(t->RightC, func);
+      emitCode(t->LeftC);
+      emitCode(t->RightC);
       break;
     }
     break;
@@ -138,7 +138,7 @@ static llvm::Function *emitFunction(int idx)
   {
     if (strcmp(getString(GetAttr(idx, NAME_ATTR)), "println") == 0)
     {
-      llvm::FunctionType *funcPrintfType = llvm::FunctionType::get(llvm::IntegerType::get(TheContext, 32), true);
+      llvm::FunctionType *funcPrintfType = llvm::FunctionType::get(llvm::Type::getInt32Ty(TheContext), true);
       func = llvm::Function::Create(funcPrintfType, llvm::Function::ExternalLinkage, "printf", TheModule.get());
       func->setCallingConv(llvm::CallingConv::C);
 
@@ -157,7 +157,7 @@ static llvm::Function *emitFunction(int idx)
     TheBuilder.SetInsertPoint(bb);
 
     // Emit function body
-    emitCode(getInitNode(idx), func);
+    emitCode(getInitNode(idx));
   }
   assert(func != nullptr);
   return func;

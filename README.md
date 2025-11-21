@@ -297,7 +297,7 @@ declare i32 @printf(...)
 
 define i32 @main() {
 entry:
-  %call = call i32 (...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @0, i32 0, i32 0))
+  %0 = call i32 (...) @printf(i8* getelementptr inbounds ([17 x i8], [17 x i8]* @0, i32 0, i32 0))
   ret i32 0
 }
 ```
